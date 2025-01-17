@@ -1,0 +1,667 @@
+{
+	"info": {
+		"_postman_id": "39192b90-9deb-4250-b856-38ead1263cc2",
+		"name": "BookStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28882113"
+	},
+	"item": [
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "createBook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "cover",
+									"type": "file",
+									"src": "/C:/Users/Aliak/OneDrive/Desktop/91Dz0CVeJyL._UF1000,1000_QL80_.jpg"
+								},
+								{
+									"key": "serialNumber",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "شهر استخوان ها",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "کاساندرا کلیر",
+									"type": "text"
+								},
+								{
+									"key": "genre",
+									"value": "علمی تخیلی",
+									"type": "text"
+								},
+								{
+									"key": "publicationYear",
+									"value": "2004",
+									"type": "text"
+								},
+								{
+									"key": "publisher",
+									"value": "انتشارات بهرنگ",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "150000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/createBook",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"createBook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllBooks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllBooks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllBooks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBookByGenre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllBooks/علمی تخیلی",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllBooks",
+								"علمی تخیلی"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editBook",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"type": "file",
+									"src": "/C:/Users/Aliak/OneDrive/Desktop/91Dz0CVeJyL._UF1000,1000_QL80_.jpg"
+								},
+								{
+									"key": "title",
+									"value": "شهر استخوان ها",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "کاساندرا کلیر",
+									"type": "text"
+								},
+								{
+									"key": "genre",
+									"value": "علمی تخیلی",
+									"type": "text"
+								},
+								{
+									"key": "publicationYear",
+									"value": "2004",
+									"type": "text"
+								},
+								{
+									"key": "publisher",
+									"value": "انتشارات بهرنگ",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "12000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/editBook/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"editBook",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBook",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/deleteBook/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"deleteBook",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts",
+			"item": [
+				{
+					"name": "createCart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/createCart",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"createCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCarts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllCarts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllCarts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCartById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllCarts/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllCarts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCartByStatus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getStatusCarts/purchased",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getStatusCarts",
+								"purchased"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCartByUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getUserCarts/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getUserCarts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editCart",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"purchased\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/editCart/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"editCart",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/deleteCart/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"deleteCart",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart-Details",
+			"item": [
+				{
+					"name": "addCartDetail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"cartId\": 1,\r\n        \"bookId\": 5,\r\n        \"quantity\": 4\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/createCartDetail",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"createCartDetail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCartDetails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllCartDetails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllCartDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCartDetailById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllCartDetails/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllCartDetails",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCartDetail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getCartDetails/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getCartDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllCartDetails",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/deleteAllCartDetails/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"deleteAllCartDetails",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCartDetails",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/deleteCartDetails/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"deleteCartDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/C:/Users/Aliak/OneDrive/Pictures/Pictures/@Wallpaper_4K3D (4437).jpg"
+								},
+								{
+									"key": "username",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "text"
+								},
+								{
+									"key": "fullName",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "test@email.com",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "No5. Black ST",
+									"type": "text"
+								},
+								{
+									"key": "birth",
+									"value": "2025-06-26",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "123456789",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/createUser",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"createUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllUsers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllUsers/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllUsers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editUser",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/C:/Users/Aliak/OneDrive/Pictures/Pictures/@Wallpaper_4K3D (4437).jpg"
+								},
+								{
+									"key": "username",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "text"
+								},
+								{
+									"key": "fullName",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "test@email.com",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "No5. Black ST",
+									"type": "text"
+								},
+								{
+									"key": "birth",
+									"value": "2025-06-26",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "123456789",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/editUser/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"editUser",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/deleteUser/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"deleteUser",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://127.0.0.1:5000/api/v1",
+			"type": "string"
+		}
+	]
+}
