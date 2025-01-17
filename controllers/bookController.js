@@ -99,6 +99,35 @@ exports.getAllBooks = async (req, res) => {
   }
 };
 
+exports.getBookById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await Book.findByPk(id, {
+      attributes: [
+        "id",
+        "serialNumber",
+        "title",
+        "cover",
+        "author",
+        "genre",
+        "publicationYear",
+        "publisher",
+        "price",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+
+    if (!book) {
+      return responseHandler(res, 404, "Book not found");
+    }
+
+    return responseHandler(res, 200, "Book retrieved successfully", book);
+  } catch (error) {
+    return responseHandler(res, 400, "Failed to get book", error);
+  }
+};
+
 // Get books by genre
 exports.getBooksByGenre = async (req, res) => {
   try {
@@ -256,21 +285,21 @@ exports.editBook = async (req, res) => {
 exports.deleteBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-      const book = await Book.findByPk(bookId, {
-        attributes: [
-          "id",
-          "serialNumber",
-          "title",
-          "cover",
-          "author",
-          "genre",
-          "publicationYear",
-          "publisher",
-          "price",
-          "createdAt",
-          "updatedAt",
-        ],
-      });
+    const book = await Book.findByPk(bookId, {
+      attributes: [
+        "id",
+        "serialNumber",
+        "title",
+        "cover",
+        "author",
+        "genre",
+        "publicationYear",
+        "publisher",
+        "price",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
 
     if (!book) {
       return responseHandler(res, 404, "Book not found");
