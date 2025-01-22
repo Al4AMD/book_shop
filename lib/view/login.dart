@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+
+import '../apis/user_Api/userApis.dart';
 import 'register.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,8 +33,11 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Image.network(
+                  'http://172.20.10.3:3000/api/v1/ui/bookShop.png',
+                ),
                 Text(
-                  "Welcome Back!",
+                  "Welcome!",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -98,25 +105,26 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
-                      // Reset error messages
-                      usernameError = null;
-                      passwordError = null;
-
                       if (usernameController.text.isEmpty) {
                         usernameError = "Username is required";
                       }
                       if (passwordController.text.isEmpty) {
                         passwordError = "Password is required";
                       }
-
-                      if (usernameError == null && passwordError == null) {
-                        // Navigate to main.dart after login
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            "/home", (Route<dynamic> route) => false);
-                      }
                     });
+
+                    log("username: ${usernameController.value.text.trim()}");
+                    log("username: ${passwordController.value.text.trim()}");
+                    UserApi api = UserApi();
+                    final res = await api.login(
+                        username: usernameController.value.text.trim(),
+                        password: passwordController.value.text.trim());
+                    _showDialog(
+                        context: context,
+                        message: res,
+                        res: res == "Login successful" ? true : false);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -152,5 +160,56 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _showDialog(
+      {required BuildContext context,
+      required String message,
+      required bool res}) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Prevents closing on tap outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: res ? Colors.green : Colors.red),
+                  child: Center(
+                    child: Icon(
+                      res ? Icons.verified : Icons.error,
+                      color: Colors.white,
+                      size: 60,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(message,
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                    ))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+    });
   }
 }

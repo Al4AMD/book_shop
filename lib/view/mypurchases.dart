@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'models.dart'; // Ensure this file includes the Book model
-import 'themeprovider.dart';
-import 'fontprovider.dart';
+
+import './fontprovider.dart';
+import './models.dart'; // Ensure this file includes the Book model
+import './themeprovider.dart';
 
 class MyPurchases extends StatelessWidget {
   final List<Book> purchasedBooks;

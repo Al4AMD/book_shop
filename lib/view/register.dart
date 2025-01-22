@@ -1,7 +1,11 @@
+import 'dart:developer';
+import 'dart:io'; // For File usage
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // Import the image_picker package
-import 'package:intl/intl.dart'; // For date formatting
-import 'dart:io'; // For File usage
+import 'package:intl/intl.dart';
+import 'package:libraryproject/apis/user_Api/userApis.dart';
+import 'package:libraryproject/models/user/userModel.dart'; // For date formatting
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -12,12 +16,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+
   String _birthDate = "Select Birth Date";
   DateTime _selectedDate = DateTime.now();
 
@@ -44,6 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _profileImagePath =
             pickedFile.path; // Store the selected image file path
       });
+      log("path: ${pickedFile.path}");
     }
   }
 
@@ -115,6 +122,30 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 20),
 
+                // Username Field
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    labelStyle: TextStyle(color: Colors.black54),
+                    filled: true,
+                    fillColor: Colors.grey.shade200,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                  ),
+                  style: TextStyle(color: Colors.black),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email is required';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+
                 // Password Field
                 TextFormField(
                   controller: _passwordController,
@@ -155,7 +186,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (value == null || value.isEmpty) {
                       return 'Please confirm your password';
                     }
-                    if (value != _passwordController.text) {
+                    if (value != _passwordController.value.text.trim()) {
                       return 'Passwords do not match';
                     }
                     return null;
@@ -216,7 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextFormField(
                   controller: TextEditingController(text: _birthDate),
                   decoration: InputDecoration(
-                    labelText: "Birth Date",
+                    labelText: "BirthDate",
                     labelStyle: TextStyle(color: Colors.black54),
                     filled: true,
                     fillColor: Colors.grey.shade200,
@@ -245,7 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(color: Colors.black),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Birth Date is required';
+                      return 'BirthDate is required';
                     }
                     return null;
                   },
@@ -278,10 +309,23 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 // Register Button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // Process data or register the user
-                      Navigator.pop(context); // Go back to LoginPage
+                      User user = User(
+                          username: _usernameController.value.text.trim(),
+                          email: _emailController.value.text.trim(),
+                          password: _passwordController.value.text.trim(),
+                          address: _addressController.value.text.trim(),
+                          phoneNumber: _phoneController.value.text.trim(),
+                          birth: _selectedDate,
+                          profilePicture: File(_profileImagePath ?? ""),
+                          fullName: _fullNameController.value.text.trim());
+                      UserApi api = UserApi();
+                      final res = await api.signUp(user: user);
+                      _showDialog(
+                          context: context,
+                          message: res,
+                          res: res == "Sign up successful!" ? true : false);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -315,5 +359,55 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  void _showDialog(
+      {required BuildContext context,
+      required String message,
+      required bool res}) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Prevents closing on tap outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: res ? Colors.green : Colors.red),
+                  child: Center(
+                    child: Icon(
+                      res ? Icons.verified : Icons.error,
+                      color: Colors.white,
+                      size: 60,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(message,
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                    ))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      Navigator.of(context).pushNamed('/login');
+    });
   }
 }

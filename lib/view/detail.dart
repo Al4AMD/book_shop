@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'themeprovider.dart'; // Import your theme provider
-import 'fontprovider.dart'; // Import your font provider
-import 'models.dart'; // Import your book model
+
+import './fontprovider.dart'; // Import your font provider
+import './models.dart'; // Import your book model
+import './themeprovider.dart'; // Import your theme provider
 
 class Detail extends StatelessWidget {
   final Book book;

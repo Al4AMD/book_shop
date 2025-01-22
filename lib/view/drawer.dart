@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'themeprovider.dart';
-import 'fontprovider.dart';
+
+import './fontprovider.dart';
+import './themeprovider.dart';
 
 class AppDrawer extends StatelessWidget {
   AppDrawer({
