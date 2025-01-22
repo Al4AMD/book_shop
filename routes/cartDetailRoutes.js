@@ -14,6 +14,11 @@ cartDetailRouter.get(
 );
 
 cartDetailRouter.get(
+  "/getBookSerial/:serialNumber",
+  cartDetailController.getIdBySerial
+);
+
+cartDetailRouter.get(
   "/getAllCartDetails/:id",
   cartDetailController.getCartDetailsById
 );

@@ -15,7 +15,7 @@ exports.createCart = async (req, res) => {
 
     const cart = await Cart.create({
       userId,
-      status: status || "order", // Default to 'order' if not specified
+      status: status || "order",
     });
 
     // Fetch the created cart with user details

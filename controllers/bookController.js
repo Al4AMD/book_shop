@@ -161,6 +161,20 @@ exports.getBooksByGenre = async (req, res) => {
   }
 };
 
+// Get all genres
+exports.getAllGenres = async (req, res) => {
+  try {
+    const genres = await Book.findAll({
+      attributes: ["genre"],
+      group: ["genre"],
+    });
+    const genreList = genres.map((item) => item.genre);
+    return responseHandler(res, 200, "Genres retrieved successfully", genreList);
+  } catch (error) {
+    return responseHandler(res, 500, "Error retrieving genres", error);
+  }
+};
+
 // Edit a book
 exports.editBook = async (req, res) => {
   try {

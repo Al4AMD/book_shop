@@ -72,6 +72,26 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
+exports.login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ where: { username } });
+    if (!user) {
+      return responseHandler(res, 404, "User not found");
+    }
+    const isPasswordValid = await Utils.comparePassword(
+      password,
+      user.password
+    );
+    if (!isPasswordValid) {
+      return responseHandler(res, 401, "Invalid password");
+    }
+    return responseHandler(res, 200, "Login successful", user);
+  } catch (error) {
+    return responseHandler(res, 500, "Error logging in", error);
+  }
+};
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();

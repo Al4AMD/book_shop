@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "39192b90-9deb-4250-b856-38ead1263cc2",
+		"_postman_id": "8c085501-97ee-49b0-9644-96de37ff155d",
 		"name": "BookStore",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28882113"
+		"_exporter_id": "38970823"
 	},
 	"item": [
 		{
@@ -83,6 +83,23 @@
 							],
 							"path": [
 								"getAllBooks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllGenres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/getAllGenres",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"getAllGenres"
 							]
 						}
 					},
@@ -631,6 +648,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test\",\n    \"password\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -660,7 +703,7 @@
 	"variable": [
 		{
 			"key": "url",
-			"value": "http://127.0.0.1:5000/api/v1",
+			"value": "http://127.0.0.1:3000/api/v1",
 			"type": "string"
 		}
 	]

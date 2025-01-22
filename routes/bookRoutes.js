@@ -7,6 +7,8 @@ bookRouter.post("/createBook", bookController.createBook);
 
 bookRouter.get("/getAllBooks", bookController.getAllBooks);
 
+bookRouter.get("/getAllGenres", bookController.getAllGenres);
+
 bookRouter.get("/getBook/:id", bookController.getBookById);
 
 bookRouter.get("/getAllBooks/:genre", bookController.getBooksByGenre);

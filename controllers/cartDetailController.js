@@ -139,6 +139,21 @@ exports.createCartDetails = async (req, res) => {
   }
 };
 
+exports.getIdBySerial = async (req, res) => {
+  try {
+    const { serialNumber } = req.params;
+    const book = await Book.findOne({
+      where: { serialNumber: serialNumber },
+    });
+    if (!book) {
+      return responseHandler(res, 404, "Book not found");
+    }
+    return responseHandler(res, 200, "Book found", book.id);
+  } catch (error) {
+    return responseHandler(res, 400, "Error finding book");
+  }
+};
+
 // Get all cart details
 exports.getAllCartDetails = async (req, res) => {
   try {

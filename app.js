@@ -25,4 +25,6 @@ app.use(
   express.static(path.join(__dirname, "dist/profile"))
 );
 
+app.use("/api/v1/ui", express.static(path.join(__dirname, "dist/ui")));
+
 module.exports = app;
