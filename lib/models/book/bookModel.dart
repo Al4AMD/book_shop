@@ -12,8 +12,10 @@ File? _stringToFile(String? path) => path != null ? File(path) : null;
 
 @JsonSerializable()
 class Book {
+  int? userId;
   String serialNumber;
   String title;
+  String? description;
   String author;
   String genre;
   String publisher;
@@ -27,8 +29,10 @@ class Book {
   File? cover;
 
   Book(
-      {required this.serialNumber,
+      {this.userId,
+      required this.serialNumber,
       required this.title,
+      this.description,
       required this.author,
       required this.genre,
       required this.publisher,

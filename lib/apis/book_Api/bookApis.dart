@@ -22,6 +22,47 @@ class BookService {
     }
   }
 
+  Future<String> createBook({required Book book}) async {
+    try {
+      final response = await ApiClient.dio.post("/createUser", data: {
+        "userId": book.userId,
+        "title": book.title,
+        "serialNumber": book.serialNumber,
+        "author": book.author,
+        "description": book.description,
+        "genre": book.genre,
+        "publisher": book.publisher,
+        "publicationYear": book.publicationYear,
+        "price": book.price 
+      });
+      if (response.data['result'] == "success") {
+        return "Success";
+      } else {
+        return "";
+      }
+    } catch (error) {
+      return "";
+    }
+  }
+
+  Future<List<Book>> getUserBooks(int userId) async {
+    List<Book> books = [];
+    try {
+      final response = await ApiClient.dio.get("/getUserBooks/$userId");
+      if (response.data['result'] == "success") {
+        for (var item in response.data['data']) {
+          books.add(Book.fromJson(item));
+        }
+        return books;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      log("error: $error");
+      return [];
+    }
+  }
+
   Future<List<dynamic>> getAllGenres() async {
     try {
       final response = await ApiClient.dio.get("/getAllGenres");

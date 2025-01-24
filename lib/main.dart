@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:libraryproject/view/home.dart';
-import 'package:libraryproject/view/onBoard/onBoardingScreen.dart';
 import 'package:libraryproject/view/profile.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'view/add.dart';
 import 'view/favprovider.dart';
 import 'view/fontprovider.dart';
@@ -14,8 +11,6 @@ import 'view/themeprovider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  bool isFirstView = prefs.getBool('userView') ?? true;
   runApp(
     MultiProvider(
       providers: [
@@ -23,17 +18,13 @@ void main() async {
         ChangeNotifierProvider(create: (context) => FontProvider()),
         ChangeNotifierProvider(create: (context) => FavoriteProvider()),
       ],
-      child: MainApp(
-        isFirstView: true,
-      ),
+      child: MainApp(),
     ),
   );
 }
 
 class MainApp extends StatelessWidget {
-  MainApp({Key? key, required this.isFirstView}) : super(key: key);
-
-  final bool isFirstView;
+  MainApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +33,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
-      home: isFirstView ? OnBoardingScreen() : MyHomePage(),
+      home: MyHomePage(),
       routes: {
         "/home": (context) => MyHomePage(),
         "/addBook": (context) => AddBook(),

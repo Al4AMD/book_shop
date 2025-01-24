@@ -10,7 +10,7 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return IntrinsicHeight(
       child: Container(
-        width: 210,
+        width: 185,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(14),
@@ -27,11 +27,11 @@ class BookCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              height: 300,
+              height: 240,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: Image.network(
-                    'http://172.20.10.3:3000/api/v1/${book.cover?.path}',
+                    'http://192.168.1.36:3000/api/v1/${book.cover?.path}',
                     fit: BoxFit.cover,
                   )),
             ),

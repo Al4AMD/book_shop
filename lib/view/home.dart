@@ -3,8 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:libraryproject/apis/book_Api/bookApis.dart';
 import 'package:libraryproject/apis/cart_Api/cartApis.dart';
+import 'package:libraryproject/services/utils/utilApis.dart';
 import 'package:libraryproject/view/bookCard.dart';
 import 'package:libraryproject/view/cart.dart';
+import 'package:libraryproject/view/themeprovider.dart';
+import 'package:provider/provider.dart';
 
 import '../models/book/bookModel.dart';
 
@@ -19,8 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final BookService api = BookService();
   final CartService cartApi = CartService();
   List<Book> books = [];
-  List<String> genres = [];
-  Map<String, List<Book>> booksByGenre = {};
+  List<Book> myBooks = [];
   bool isLoading = true;
   List<Book> cart = [];
 
@@ -35,12 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
     for (var item in allBooks) {
       books.add(item);
     }
-    genres = books.map((book) => book.genre).toSet().toList();
-    booksByGenre = {
-      for (var genre in genres)
-        genre: books.where((book) => book.genre == genre).toList(),
-    };
-    log("book by genre: ${booksByGenre} ${booksByGenre.length}");
+    final id = await UtilsService.getUserId();
+    final userBooks = await api.getUserBooks(id);
+    for (var item in userBooks) {
+      myBooks.add(item);
+    }
     setState(() {
       isLoading = false;
     });
@@ -48,8 +49,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: isDark ? Colors.black : Colors.grey.shade100,
       appBar: AppBar(
         leadingWidth: double.infinity,
         leading: Padding(
@@ -60,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Text('BookStore',
                   style: TextStyle(
-                      color: Colors.black,
+                      color: isDark ? Colors.white : Colors.black,
                       fontWeight: FontWeight.w800,
                       fontSize: 20)),
               Row(
@@ -69,6 +72,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () =>
                           Navigator.of(context).pushNamed('/profile'),
                       icon: Icon(Icons.person)),
+                  IconButton(
+                    onPressed: () =>
+                        context.read<ThemeProvider>().changeTheme(),
+                    icon: Icon(isDark ? Icons.sunny : Icons.dark_mode),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/addBook'),
+                    icon: Icon(Icons.add),
+                  )
                 ],
               )
             ],
@@ -91,13 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: EdgeInsets.only(
                         top: 10, right: 10, left: 10, bottom: 0),
                     children: [
-                      Image.network(
-                        'http://172.20.10.3:3000/api/v1/ui/empty.png',
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text(
                             'All Books',
                             style: TextStyle(
-                                color: Colors.black,
+                                color: isDark ? Colors.white : Colors.black,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700),
                           )
@@ -114,90 +120,124 @@ class _MyHomePageState extends State<MyHomePage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 450,
-                        child: ListView.builder(
-                            itemCount: books.length,
-                            scrollDirection: Axis.horizontal,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            shrinkWrap: false,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                    left: 12, top: 6, bottom: 6, right: 12),
-                                child: GestureDetector(
+                      ListView.builder(
+                        itemCount: (books.length / 2)
+                            .ceil(), // Ensure we handle an odd number of books
+                        scrollDirection: Axis.vertical,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          int firstBookIndex = index *
+                              2; // Get the index of the first book in the row
+                          int secondBookIndex = firstBookIndex +
+                              1; // Get the index of the second book in the row
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // First BookCard
+                                GestureDetector(
+                                  onTap: () => setState(() {
+                                    if (!cart.contains(books[firstBookIndex])) {
+                                      cart.add(books[firstBookIndex]);
+                                    }
+                                  }),
+                                  child: BookCard(book: books[firstBookIndex]),
+                                ),
+
+                                // Second BookCard (if it exists)
+                                if (secondBookIndex < books.length)
+                                  GestureDetector(
                                     onTap: () => setState(() {
-                                          if (!cart.contains(books[index])) {
-                                            cart.add(books[index]);
-                                          }
-                                        }),
-                                    child: BookCard(book: books[index])),
-                              );
-                            }),
+                                      if (!cart
+                                          .contains(books[secondBookIndex])) {
+                                        cart.add(books[secondBookIndex]);
+                                      }
+                                    }),
+                                    child:
+                                        BookCard(book: books[secondBookIndex]),
+                                  )
+                                else
+                                  // Empty Spacer if there's no second book
+                                  const Spacer(),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'My Books',
+                            style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                          )
+                        ],
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       ListView.builder(
-                          itemCount: booksByGenre.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Column(
+                        itemCount: (myBooks.length / 2)
+                            .ceil(), // Ensure we handle an odd number of books
+                        scrollDirection: Axis.vertical,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          int firstBookIndex = index *
+                              2; // Get the index of the first book in the row
+                          int secondBookIndex = firstBookIndex +
+                              1; // Get the index of the second book in the row
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      booksByGenre.keys.elementAt(index),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w700),
-                                    )
-                                  ],
+                                // First BookCard
+                                GestureDetector(
+                                  onTap: () => setState(() {
+                                    if (!cart
+                                        .contains(myBooks[firstBookIndex])) {
+                                      cart.add(myBooks[firstBookIndex]);
+                                    }
+                                  }),
+                                  child:
+                                      BookCard(book: myBooks[firstBookIndex]),
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 450,
-                                  child: ListView.builder(
-                                      itemCount: booksByGenre.values
-                                          .elementAt(index)
-                                          .length,
-                                      scrollDirection: Axis.horizontal,
-                                      physics:
-                                          const AlwaysScrollableScrollPhysics(),
-                                      shrinkWrap: false,
-                                      itemBuilder: (context, index2) {
-                                        final book = booksByGenre.values
-                                            .elementAt(index)[index2];
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 12,
-                                              top: 6,
-                                              bottom: 6,
-                                              right: 12),
-                                          child: GestureDetector(
-                                              onTap: () => setState(() {
-                                                    if (!cart.contains(book)) {
-                                                      cart.add(book);
-                                                    }
-                                                  }),
-                                              child: BookCard(book: book)),
-                                        );
-                                      }),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+
+                                // Second BookCard (if it exists)
+                                if (secondBookIndex < myBooks.length)
+                                  GestureDetector(
+                                    onTap: () => setState(() {
+                                      if (!cart
+                                          .contains(myBooks[secondBookIndex])) {
+                                        cart.add(myBooks[secondBookIndex]);
+                                      }
+                                    }),
+                                    child: BookCard(
+                                        book: myBooks[secondBookIndex]),
+                                  )
+                                else
+                                  // Empty Spacer if there's no second book
+                                  const Spacer(),
                               ],
-                            );
-                          }),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       if (cart.isNotEmpty)
                         const SizedBox(
                           height: 150,
@@ -231,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.network(
-                                        'http://172.20.10.3:3000/api/v1/${cart[index].cover!.path}'),
+                                        'http://192.168.1.36:3000/api/v1/${cart[index].cover!.path}'),
                                   ),
                                 ),
                               );

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:libraryproject/view/home.dart';
 import 'package:provider/provider.dart';
 
@@ -13,22 +16,44 @@ class AddBook extends StatefulWidget {
 
 class _AddBookState extends State<AddBook> {
   final HttpService httpService = HttpService();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _serialNumber = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _authorController = TextEditingController();
+  final TextEditingController _genreController = TextEditingController();
+  final TextEditingController _publicationYear = TextEditingController();
+  final TextEditingController _publisherController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  String? _cover; // Store the selected profile image path
 
   bool _nameError = false;
+  bool _serialError = false;
+  bool _descriptionError = false;
+  bool _genreError = false;
+  bool _publicationYear = false;
+  bool _publisher = false;
   bool _authorError = false;
   bool _priceError = false;
   bool _isLoading = false;
 
+    Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _cover =
+            pickedFile.path; // Store the selected image file path
+      });
+      log("path: ${pickedFile.path}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Retrieve the current theme mode (light or dark)
     bool isDark = Provider.of<ThemeProvider>(context).isDark;
     String selectedFont = context.watch<FontProvider>().selectedFont;
 
-    // Define color values based on theme
     Color backgroundColor = isDark ? Color(0xFF062C65) : Color(0xFFE7B4B4);
     Color textFieldBackgroundColor =
         isDark ? Color(0xFF1E1E1E) : Color(0xFFF5F5F5);
@@ -68,7 +93,15 @@ class _AddBookState extends State<AddBook> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildTextField(
-                    controller: _nameController,
+                    controller: _serialNumber,
+                    hintText: 'Book Serial',
+                    backgroundColor: textFieldBackgroundColor,
+                    hintTextColor: hintTextColor,
+                    error: _nameError,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    controller: _titleController,
                     hintText: 'Book Name',
                     backgroundColor: textFieldBackgroundColor,
                     hintTextColor: hintTextColor,
@@ -78,6 +111,38 @@ class _AddBookState extends State<AddBook> {
                   _buildTextField(
                     controller: _authorController,
                     hintText: 'Author Name',
+                    backgroundColor: textFieldBackgroundColor,
+                    hintTextColor: hintTextColor,
+                    error: _authorError,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    controller: _descriptionController,
+                    hintText: 'Description',
+                    backgroundColor: textFieldBackgroundColor,
+                    hintTextColor: hintTextColor,
+                    error: _authorError,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    controller: _genreController,
+                    hintText: 'Genre Name',
+                    backgroundColor: textFieldBackgroundColor,
+                    hintTextColor: hintTextColor,
+                    error: _authorError,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    controller: _publicationYear,
+                    hintText: 'Publication Year',
+                    backgroundColor: textFieldBackgroundColor,
+                    hintTextColor: hintTextColor,
+                    error: _authorError,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    controller: _publisherController,
+                    hintText: 'Publisher',
                     backgroundColor: textFieldBackgroundColor,
                     hintTextColor: hintTextColor,
                     error: _authorError,
@@ -185,9 +250,10 @@ class _AddBookState extends State<AddBook> {
 
   void _addBook() async {
     setState(() {
-      _nameError = _nameController.text.isEmpty;
+      _nameError = _titleController.text.isEmpty;
       _authorError = _authorController.text.isEmpty;
       _priceError = _priceController.text.isEmpty;
+      
     });
 
     if (!_nameError && !_authorError && !_priceError) {

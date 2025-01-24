@@ -48,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     minRadius: 10,
                     maxRadius: 50,
                     backgroundImage: NetworkImage(
-                        'http://172.20.10.3:3000/api/v1${user!.profilePicture!.path}'),
+                        'http://192.168.1.36:3000/api/v1${user!.profilePicture!.path}'),
                     // Placeholder for profile image
                     backgroundColor: Colors.grey[300],
                   ),
