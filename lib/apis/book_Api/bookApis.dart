@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:libraryproject/models/book/bookModel.dart';
 import 'package:libraryproject/services/apiClient.dart';
+import 'package:libraryproject/services/utils/utilApis.dart';
 
 class BookService {
   Future<List<Book>> getAllBooks() async {
@@ -24,8 +27,8 @@ class BookService {
 
   Future<String> createBook({required Book book}) async {
     try {
-      final response = await ApiClient.dio.post("/createUser", data: {
-        "userId": book.userId,
+      final formData = FormData.fromMap({
+        "userId": book.userId != 0 ? book.userId : null,
         "title": book.title,
         "serialNumber": book.serialNumber,
         "author": book.author,
@@ -33,8 +36,12 @@ class BookService {
         "genre": book.genre,
         "publisher": book.publisher,
         "publicationYear": book.publicationYear,
-        "price": book.price 
+        "price": book.price,
+        if (book.cover != null)
+          'cover': await MultipartFile.fromFile(book.cover!.path,
+              contentType: MediaType('image', 'jpg')),
       });
+      final response = await ApiClient.dio.post("/createBook", data: formData);
       if (response.data['result'] == "success") {
         return "Success";
       } else {

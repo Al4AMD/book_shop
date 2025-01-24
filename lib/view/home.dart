@@ -271,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.network(
-                                        'http://192.168.1.36:3000/api/v1/${cart[index].cover!.path}'),
+                                        'http://192.168.1.38:3000/api/v1/${cart[index].cover!.path}'),
                                   ),
                                 ),
                               );

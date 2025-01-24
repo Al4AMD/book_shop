@@ -1,7 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:libraryproject/apis/book_Api/bookApis.dart';
+import 'package:libraryproject/models/book/bookModel.dart';
+import 'package:libraryproject/services/utils/utilApis.dart';
 import 'package:libraryproject/view/home.dart';
 import 'package:provider/provider.dart';
 
@@ -30,20 +34,19 @@ class _AddBookState extends State<AddBook> {
   bool _serialError = false;
   bool _descriptionError = false;
   bool _genreError = false;
-  bool _publicationYear = false;
+  bool _publicationYearError = false;
   bool _publisher = false;
   bool _authorError = false;
   bool _priceError = false;
   bool _isLoading = false;
 
-    Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
-        _cover =
-            pickedFile.path; // Store the selected image file path
+        _cover = pickedFile.path; // Store the selected image file path
       });
       log("path: ${pickedFile.path}");
     }
@@ -87,105 +90,122 @@ class _AddBookState extends State<AddBook> {
               borderRadius: BorderRadius.circular(25),
             ),
             color: cardBackgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTextField(
-                    controller: _serialNumber,
-                    hintText: 'Book Serial',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _nameError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _titleController,
-                    hintText: 'Book Name',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _nameError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _authorController,
-                    hintText: 'Author Name',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _authorError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _descriptionController,
-                    hintText: 'Description',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _authorError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _genreController,
-                    hintText: 'Genre Name',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _authorError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _publicationYear,
-                    hintText: 'Publication Year',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _authorError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _publisherController,
-                    hintText: 'Publisher',
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _authorError,
-                  ),
-                  const SizedBox(height: 15),
-                  _buildTextField(
-                    controller: _priceController,
-                    hintText: 'Price',
-                    keyboardType: TextInputType.number,
-                    backgroundColor: textFieldBackgroundColor,
-                    hintTextColor: hintTextColor,
-                    error: _priceError,
-                  ),
-                  const SizedBox(height: 25),
-                  _isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            ElevatedButton(
-                              onPressed: _addBook,
-                              child: Text(
-                                'Add Book',
-                                style: TextStyle(
-                                  fontFamily: selectedFont,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: textColor,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                                    GestureDetector(
+                      onTap: _pickImage, // Open gallery when tapped
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _cover != null
+                            ? FileImage(
+                                File(_cover!)) // Use the picked image
+                            : AssetImage('assets/images/default_profile.png')
+                                as ImageProvider,
+                        child: _cover == null
+                            ? Icon(Icons.camera_alt, color: Colors.white)
+                            : null,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _buildTextField(
+                      controller: _serialNumber,
+                      hintText: 'Book Serial',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _nameError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _titleController,
+                      hintText: 'Book Name',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _nameError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _authorController,
+                      hintText: 'Author Name',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _authorError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _descriptionController,
+                      hintText: 'Description',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _authorError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _genreController,
+                      hintText: 'Genre Name',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _authorError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _publicationYear,
+                      hintText: 'Publication Year',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _authorError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _publisherController,
+                      hintText: 'Publisher',
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _authorError,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: _priceController,
+                      hintText: 'Price',
+                      keyboardType: TextInputType.number,
+                      backgroundColor: textFieldBackgroundColor,
+                      hintTextColor: hintTextColor,
+                      error: _priceError,
+                    ),
+                    const SizedBox(height: 25),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: _addBook,
+                                child: Text(
+                                  'Add Book',
+                                  style: TextStyle(
+                                    fontFamily: selectedFont,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: textColor,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: buttonBackgroundColor,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  elevation: 5,
                                 ),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: buttonBackgroundColor,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 30),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                elevation: 5,
-                              ),
-                            ),
-                          ],
-                        ),
-                ],
+                            ],
+                          ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -249,49 +269,74 @@ class _AddBookState extends State<AddBook> {
   }
 
   void _addBook() async {
-    setState(() {
-      _nameError = _titleController.text.isEmpty;
-      _authorError = _authorController.text.isEmpty;
-      _priceError = _priceController.text.isEmpty;
-      
-    });
-
-    if (!_nameError && !_authorError && !_priceError) {
-      final bookDetails = {
-        'title': _nameController.text.trim(),
-        'author': _authorController.text.trim(),
-        'price': _priceController.text.trim(),
-      };
-
-      setState(() => _isLoading = true);
-
-      try {
-        await httpService.createBook(bookDetails);
-        // Navigator.pop(context, true); // Indicate book was added successfully
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => MyHomePage()),
-            (Route<dynamic> route) => false);
-      } catch (error) {
-        setState(() => _isLoading = false);
-        _showErrorDialog('Failed to add book: $error');
-      }
-    }
+    final id = await UtilsService.getUserId();
+    Book book = Book(
+      userId: id,
+      serialNumber: _serialNumber.value.text.trim(),
+      title: _titleController.value.text.trim(),
+      cover: File(_cover!),
+      description: _descriptionController.value.text.trim(),
+      author: _authorController.value.text.trim(),
+      genre: _genreController.value.text.trim(),
+      publisher: _publisherController.value.text.trim(),
+      price: double.parse(_priceController.value.text.trim()),
+      publicationYear: int.parse(_publicationYear.value.text.trim()),
+    );
+    BookService api = BookService();
+    final res = await api.createBook(book: book);
+    _showDialog(
+        context: context,
+        message: res,
+        res: res == "Success" ? true : false);
   }
 
-  void _showErrorDialog(String message) {
+  void _showDialog(
+      {required BuildContext context,
+      required String message,
+      required bool res}) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
+      barrierDismissible: true, // Prevents closing on tap outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: res ? Colors.green : Colors.red),
+                  child: Center(
+                    child: Icon(
+                      res ? Icons.verified : Icons.error,
+                      color: Colors.white,
+                      size: 60,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(message,
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                    ))
+              ],
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      Navigator.of(context).pushNamedAndRemoveUntil('/home', (_) => false);
+    });
   }
 }

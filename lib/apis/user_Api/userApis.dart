@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:libraryproject/models/user/userModel.dart';
@@ -52,7 +54,11 @@ class UserApi {
   Future<Map<String, dynamic>> getUserInfo() async {
     try {
       final id = await UtilsService.getUserId();
+      if (id == 0) {
+        return {};
+      }
       final response = await ApiClient.dio.get("/getAllUsers/$id");
+      log("res: $response");
       if (response.data['result'] == "success") {
         return response.data['data'];
       } else {

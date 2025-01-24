@@ -10,7 +10,7 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return IntrinsicHeight(
       child: Container(
-        width: 185,
+        width: 160,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(14),
@@ -31,7 +31,7 @@ class BookCard extends StatelessWidget {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: Image.network(
-                    'http://192.168.1.36:3000/api/v1/${book.cover?.path}',
+                    'http://192.168.1.38:3000/api/v1/${book.cover?.path}',
                     fit: BoxFit.cover,
                   )),
             ),
@@ -51,12 +51,18 @@ class BookCard extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(
-                  book.title,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16),
+                SizedBox(
+                  width: 150,
+                  child: Text(
+                    book.title,
+                    overflow: TextOverflow.clip,
+                    maxLines: 3,
+                    style: TextStyle(
+                        overflow: TextOverflow.clip,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16),
+                  ),
                 ),
               ],
             ),

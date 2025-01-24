@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Image.network(
-                  'http://192.168.1.36:3000/api/v1/ui/bookShop.png',
+                  'http://192.168.1.38:3000/api/v1/ui/bookShop.png',
                 ),
                 Text(
                   "Welcome!",

@@ -79,7 +79,7 @@ class _CartPageState extends State<CartPage> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Image.network(
-                                  'http://192.168.1.36:3000/api/v1/${book.cover!.path}',
+                                  'http://192.168.1.38:3000/api/v1/${book.cover!.path}',
                                   fit: BoxFit.contain,
                                 ),
                               ),
@@ -91,7 +91,7 @@ class _CartPageState extends State<CartPage> {
                                   Text(
                                     '${book.title}',
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 17,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w800,
                                     ),
